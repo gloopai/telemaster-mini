@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useUserStore } from './user'
 
 // Telegram 脚本地址
 const TELEGRAM_SCRIPT_SRC = 'https://telegram.org/js/telegram-web-app.js'
@@ -9,7 +10,6 @@ export const useTelegramStore = defineStore('telegram', () => {
   const isScriptLoaded = ref(false)
   // 脚本加载错误信息
   const scriptError = ref<string | null>(null)
-
   const initData = ref<string>('')
 
   /**
@@ -31,6 +31,8 @@ export const useTelegramStore = defineStore('telegram', () => {
         isScriptLoaded.value = true
         scriptError.value = null
         initData.value = (window as any).Telegram.WebApp.initData || ''
+        const userStore = useUserStore()
+        userStore.setMiniLogin(initData.value)
         resolve()
       }
       script.onerror = () => {
