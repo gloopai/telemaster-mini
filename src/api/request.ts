@@ -9,7 +9,7 @@ const PostAsync = async <T, R = any>(_opt: PostParams): Promise<R> => {
   const url = `${import.meta.env.VITE_API_URL}/${_opt.path}`
   const postData = {
     command: _opt.command,
-    ..._opt.params,
+    data: { ..._opt.params },
   }
   const _headers = {
     Accept: 'application/json',
