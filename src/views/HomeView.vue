@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useTelegramStore } from '@/stores/telegram'
-
-const telegramStore = useTelegramStore()
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
 </script>
 
 <template>
-  {{ telegramStore.initData || '---' }}
+  {{ userStore.isLoggedIn }}
   <ul class="list bg-base-100 rounded-box shadow-md">
     <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Most played songs this week</li>
 

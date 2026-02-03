@@ -1,20 +1,7 @@
-import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
-
-// 协议处理钩子，可根据需要自定义
-function handleProtocol<T>(response: AxiosResponse<T>): T {
-  // 这里可以根据你的协议格式进行处理，比如：
-  // if (response.data && response.data.code !== 0) {
-  //   throw new Error(response.data.message || '未知错误');
-  // }
-  // return response.data.data;
-  return response.data
-}
-
 export interface PostParams {
   path: string
   command: string
   params: Record<string, any>
-  config?: AxiosRequestConfig
 }
 
 // 发送 post 请求
@@ -35,6 +22,15 @@ const PostAsync = async <T, R = any>(_opt: PostParams): Promise<R> => {
       headers: _headers,
       body: JSON.stringify(postData),
     })
+    if (!response.ok) {
+      return undefined as unknown as R
+    }
+
+    const { code, message } = await response.json()
+    if (code === 50000) {
+      return undefined as unknown as R
+    }
+
     return response.json()
   } catch (error: any) {
     return Promise.reject(error)

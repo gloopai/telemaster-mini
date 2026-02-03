@@ -7,7 +7,9 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = computed(() => !!token.value)
   const setMiniLogin = async (initData: string) => {
     const res = await telgramLogin(initData)
-    token.value = res.token || null
+    if (res && res.token) {
+      token.value = res.token || null
+    }
   }
 
   return {
