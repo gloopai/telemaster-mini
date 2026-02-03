@@ -17,26 +17,27 @@ export interface PostParams {
   config?: AxiosRequestConfig
 }
 
-// 发送 post 请求
-const PostAsync = async <T, R = any>(_opt: PostParams): Promise<R> => {
+// 发送 post 请求，支持自定义 header
+const PostAsync = async <T, R = any>(_opt: PostParams & { headers?: Record<string, string> }): Promise<R> => {
   const url = `${import.meta.env.VITE_API_URL}/${_opt.path}`
   const postData = {
     command: _opt.command,
     ..._opt.params,
   }
-  const _headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    Authorization: '',
+  // 合并 headers
+  const config: AxiosRequestConfig = {
+    ..._opt.config,
+    headers: {
+      ...(typeof _opt.config?.headers === 'object' ? _opt.config?.headers : {}),
+      ...(_opt.headers || {}),
+    },
   }
   try {
-    const response = await await fetch(url, {
-      method: 'POST',
-      headers: _headers,
-      body: JSON.stringify(postData),
-    })
-    return response.json()
+    const response = await axios.post<R>(url, postData, config)
+    return handleProtocol(response)
   } catch (error: any) {
+    // 这里可以统一处理错误，比如弹窗、日志等
+    // if (error.response) { ... }
     return Promise.reject(error)
   }
 }
