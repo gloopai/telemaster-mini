@@ -26,12 +26,12 @@ const PostAsync = async <T, R = any>(_opt: PostParams): Promise<R> => {
       return undefined as unknown as R
     }
 
-    const { code, message } = await response.json()
+    const { code, message, data } = await response.json()
     if (code === 50000) {
       return undefined as unknown as R
     }
 
-    return response.json()
+    return data
   } catch (error: any) {
     return Promise.reject(error)
   }
