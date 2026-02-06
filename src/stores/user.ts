@@ -4,16 +4,18 @@ import { telgramLogin } from '@/api/user'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string | null>(null)
-  const isLoggedIn = computed(() => !!token.value)
+  const isLoggedIn = ref<boolean>(false)
   const setMiniLogin = async (initData: string) => {
     const res = await telgramLogin(initData)
     if (res && res.token) {
       token.value = res.token || null
+      isLoggedIn.value = true
     }
   }
 
   return {
     setMiniLogin,
     isLoggedIn,
+    token,
   }
 })
